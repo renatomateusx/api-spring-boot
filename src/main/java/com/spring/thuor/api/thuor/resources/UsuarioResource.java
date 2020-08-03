@@ -21,9 +21,6 @@ import com.spring.thuor.api.thuor.rules.UsuarioRules;
 @RestController
 @RequestMapping(value="/api")
 public class UsuarioResource  {
-
-	/*@Autowired
-	private JwtTokenUtil jwtTokenUtil;*/
 	
 	@Autowired
 	UsuarioRepository usuarioRepository;
@@ -45,17 +42,19 @@ public class UsuarioResource  {
 	public ResponseEntity<Usuario> postUsuario(@RequestBody Usuario usuario) {
 		return usuarioRule.checkRules(usuario);		
 	}
+	
 	@DeleteMapping("/usuario")
 	public void deleteUsuario(@RequestBody Usuario usuario) {
 		usuarioRepository.delete(usuario);
 	}
+	
 	@PutMapping("/usuario")
 	public Usuario putUsuario(@RequestBody Usuario usuario) {
 		return usuarioRepository.save(usuario);
 	}
 	
 	@PostMapping("/usuario/doLogin")
-	public ResponseEntity<Usuario> doLogin(@RequestBody String email, String pass) {		
-		return usuarioRule.doLogin(email, pass);
+	public ResponseEntity<Usuario> doLogin(@RequestBody Usuario usuario) {		
+		return usuarioRule.doLogin(usuario);
 	}
 }

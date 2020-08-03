@@ -1,5 +1,7 @@
 package com.spring.thuor.api.thuor.rules;
 
+import java.io.Console;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,22 +29,26 @@ public class UsuarioRules {
 		return new ResponseEntity<Usuario>(HttpStatus.BAD_REQUEST);
 	}
 	
-	public ResponseEntity<Usuario> doLogin(String email, String pass) {
-		Usuario usr = usuarioRepository.findByEmail(email);		
-		if(usr != null){
-			if(usr.getEmail() == pass) {
-				
+	public ResponseEntity<Usuario> doLogin(Usuario usuario) {
+		try {
+			Usuario usr = usuarioRepository.findByEmail(usuario.getEmail());
+			if(usr != null){
+				if(usr.getPass().equals(usuario.getPass())) {
+					String _token = usuarioToken.generateToken(usr);
+					usr.setToken(_token);
+					return new ResponseEntity<Usuario>(usr, HttpStatus.OK);
+				}
+				else {
+					return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);
+				}
 			}
 			else {
 				return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);
 			}
 		}
-		else {
-			return new ResponseEntity<Usuario>(HttpStatus.UNAUTHORIZED);
+		catch (Exception e) {
+			throw e;
 		}
-		
-		return new ResponseEntity<Usuario>(HttpStatus.NOT_ACCEPTABLE);
 	}
-	
 	
 }
